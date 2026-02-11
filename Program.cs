@@ -1,9 +1,12 @@
-﻿using DotNetEnv;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using TheSeatLineApi.AuthServices.Business;
+using TheSeatLineApi.AuthServices.Helpers;
+using TheSeatLineApi.AuthServices.Repository;
 using TheSeatLineApi.Data;
+using TheSeatLineApi.MasterServices.Business;
+using TheSeatLineApi.MasterServices.Repository;
 
 namespace TheSeatLineApi
 {
@@ -11,7 +14,6 @@ namespace TheSeatLineApi
     {
         public static void Main(string[] args)
         {
-            Env.Load();
 
             var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,10 @@ namespace TheSeatLineApi
                         )
                     };
                 });
+            builder.Services.AddScoped<IUserRepository, UserBusiness>();
+            builder.Services.AddScoped<IAuthService, AuthBusiness>();
+            builder.Services.AddScoped<ICityRepository, CityBusiness>();
+            builder.Services.AddSingleton<JwtTokenGenerator>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -72,3 +78,12 @@ namespace TheSeatLineApi
         }
     }
 }
+
+
+
+
+
+
+
+
+
