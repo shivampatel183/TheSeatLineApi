@@ -68,5 +68,31 @@ namespace TheSeatLineApi.MasterServices.Controller
                 return Response<int>.Fail(ex.Message);
             }
         }
+
+        [HttpGet("GetCityByName")]
+        public async Task<Response<CitySelectDTO>> GetCitByName(string Name)
+        {
+            try
+            {
+                return Response<CitySelectDTO>.Ok(await cityRepository.SelectCityByName(Name));
+            }
+            catch(Exception ex)
+            {
+                return Response<CitySelectDTO>.Fail("City Not Found");
+            }
+        }
+
+        [HttpGet("GetCityById")]
+        public async Task<Response<CitySelectDTO>> GetCitById(int Id)
+        {
+            try
+            {
+                return Response<CitySelectDTO>.Ok(await cityRepository.SelectCityById(Id));
+            }
+            catch (Exception ex)
+            {
+                return Response<CitySelectDTO>.Fail("City Not Found");
+            }
+        }
     }
 }

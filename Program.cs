@@ -51,10 +51,15 @@ namespace TheSeatLineApi
                         )
                     };
                 });
+
             builder.Services.AddScoped<IUserRepository, UserBusiness>();
             builder.Services.AddScoped<IAuthService, AuthBusiness>();
             builder.Services.AddScoped<ICityRepository, CityBusiness>();
             builder.Services.AddSingleton<JwtTokenGenerator>();
+            builder.Services.AddScoped<IVenueRepository, VenueBusiness>();
+            builder.Services.AddScoped<IEventRepository, EventBusiness>();
+            builder.Services.AddScoped<IShowRepository, ShowBusiness>();
+            builder.Services.AddScoped<IShowSeatCategoryRepository, ShowSeatCategoryBusiness>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
