@@ -43,7 +43,7 @@ namespace TheSeatLineApi.AuthServices.Business
             await _userRepo.AddAsync(user);
 
             return new AuthResponseDto(
-                _jwt.GenerateToken(user.Email, user.FullName),
+                _jwt.GenerateToken(user.Email, user.FullName, "User"),
                 refreshToken,
                 user.Email,
                 user.FullName
@@ -70,7 +70,7 @@ namespace TheSeatLineApi.AuthServices.Business
             await _context.SaveChangesAsync();
 
             return new AuthResponseDto(
-                _jwt.GenerateToken(user.Email, user.FullName),
+                _jwt.GenerateToken(user.Email, user.FullName, user.Role),
                 newRefreshToken,
                 user.Email,
                 user.FullName
@@ -107,7 +107,7 @@ namespace TheSeatLineApi.AuthServices.Business
                 await _userRepo.AddAsync(user);
             }
 
-            var accessToken = _jwt.GenerateToken(user.Email, user.FullName);
+            var accessToken = _jwt.GenerateToken(user.Email, user.FullName, user.Email);
             var refreshToken = _jwt.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
@@ -133,7 +133,7 @@ namespace TheSeatLineApi.AuthServices.Business
                 throw new Exception("Invalid Refresh Token");
             }
 
-            var newAccessToken = _jwt.GenerateToken(user.Email, user.FullName);
+            var newAccessToken = _jwt.GenerateToken(user.Email, user.FullName, user.Role);
             var newRefreshToken = _jwt.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;

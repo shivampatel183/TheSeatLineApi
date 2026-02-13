@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TheSeatLineApi.Common;
 using TheSeatLineApi.MasterServices.Business;
@@ -7,6 +8,7 @@ using TheSeatLineApi.MasterServices.Repository;
 
 namespace TheSeatLineApi.MasterServices.Controller
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class CityController : ControllerBase
@@ -29,7 +31,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                 return Response<List<CitySelectDTO>>.Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("InsertCity")]
         public async Task<Response<int>> InsertCity(CityInsertDTO city)
         {
@@ -42,7 +44,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                 return Response<int>.Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateCity")]
         public async Task<Response<int>> UpdateCity(CityInsertDTO city)
         {
@@ -55,7 +57,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                 return Response<int>.Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteCity")]
         public async Task<Response<int>> DeleteCity(int cityId)
         {

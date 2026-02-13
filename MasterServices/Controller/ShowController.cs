@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TheSeatLineApi.Common;
 using TheSeatLineApi.MasterServices.DTOs;
 using TheSeatLineApi.MasterServices.Repository;
@@ -28,7 +29,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                 return Response<List<ShowSelectDTO>>.Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("InsertShow")]
         public async Task<Response<int>> InsertShow(ShowInsertDTO dto)
         {
@@ -41,7 +42,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                 return Response<int>.Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateShow")]
         public async Task<Response<int>> UpdateShow(ShowInsertDTO dto)
         {
@@ -54,7 +55,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                 return Response<int>.Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteShow")]
         public async Task<Response<int>> DeleteShow(int showId)
         {

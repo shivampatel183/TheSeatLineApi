@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using static TheSeatLineApi.MasterServices.DTOs.EventDTOs;
 using TheSeatLineApi.MasterServices.Repository;
 using TheSeatLineApi.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TheSeatLineApi.MasterServices.Controller
 {
@@ -46,7 +47,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail("Event Not Found");
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("InsertEvent")]
         public async Task<Response<int>> InsertEvent(EventInsertDTO dto)
         {
@@ -61,7 +62,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateEvent")]
         public async Task<Response<int>> UpdateEvent(EventInsertDTO dto)
         {
@@ -76,7 +77,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteEvent")]
         public async Task<Response<int>> DeleteEvent(int eventId)
         {

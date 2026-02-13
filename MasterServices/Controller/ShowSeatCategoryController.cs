@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TheSeatLineApi.Common;
 using TheSeatLineApi.MasterServices.DTOs;
 using TheSeatLineApi.MasterServices.Repository;
@@ -30,7 +31,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("InsertShowSeatCategory")]
         public async Task<Response<int>> InsertShowSeatCategory(ShowSeatCategoryInsertDTO dto)
         {
@@ -45,7 +46,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateShowSeatCategory")]
         public async Task<Response<int>> UpdateShowSeatCategory(ShowSeatCategoryInsertDTO dto)
         {
@@ -60,7 +61,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteShowSeatCategory")]
         public async Task<Response<int>> DeleteShowSeatCategory(int id)
         {

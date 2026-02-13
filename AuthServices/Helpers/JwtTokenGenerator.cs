@@ -15,12 +15,13 @@ namespace TheSeatLineApi.AuthServices.Helpers
             _config = config;
         }
 
-        public string GenerateToken(string email, string name)
+        public string GenerateToken(string email, string name, string role)
         {
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Name, name)
+                new Claim(ClaimTypes.Name, name),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var key = new SymmetricSecurityKey(

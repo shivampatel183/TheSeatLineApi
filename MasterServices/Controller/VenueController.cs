@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TheSeatLineApi.Common;
 using TheSeatLineApi.MasterServices.DTOs;
@@ -61,7 +62,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail("Venue Not Found");
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("InsertVenue")]
         public async Task<Response<int>> InsertVenue(VenueInsertDTO venue)
         {
@@ -76,7 +77,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateVenue")]
         public async Task<Response<int>> UpdateVenue(VenueInsertDTO venue)
         {
@@ -91,7 +92,7 @@ namespace TheSeatLineApi.MasterServices.Controller
                     .Fail(ex.Message);
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteVenue")]
         public async Task<Response<int>> DeleteVenue(int venueId)
         {
