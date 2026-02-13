@@ -137,6 +137,7 @@ namespace TheSeatLineApi.AuthServices.Business
             var newRefreshToken = _jwt.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _context.SaveChangesAsync();
 
             return new AuthResponseDto(newAccessToken, newRefreshToken, user.Email, user.FullName);
