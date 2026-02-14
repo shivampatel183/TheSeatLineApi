@@ -18,6 +18,7 @@ namespace TheSeatLineApi.MasterServices.Controller
             this.venueRepository = venueRepository;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetVenue")]
         public async Task<Response<List<VenueSelectDTO>>> GetVenue()
         {

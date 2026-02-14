@@ -6,6 +6,8 @@ using TheSeatLineApi.AuthServices.Entity;
 using Microsoft.EntityFrameworkCore;
 using TheSeatLineApi.Data;
 using Google.Apis.Auth;
+using System.Data;
+using TheSeatLineApi.Common.Enums;
 
 namespace TheSeatLineApi.AuthServices.Business
 {
@@ -34,7 +36,8 @@ namespace TheSeatLineApi.AuthServices.Business
                 FullName = dto.FullName,
                 Email = dto.Email,
                 PasswordHash = PasswordHasher.Hash(dto.Password),
-                IsEmailVerified = false
+                IsEmailVerified = false,
+                RoleId = UserRole.User,
             };
             var refreshToken = _jwt.GenerateRefreshToken();
             user.RefreshToken = refreshToken;
@@ -43,7 +46,7 @@ namespace TheSeatLineApi.AuthServices.Business
             await _userRepo.AddAsync(user);
 
             return new AuthResponseDto(
-                _jwt.GenerateToken(user.Email, user.FullName, "User"),
+                _jwt.GenerateToken(user.Email, user.FullName, user.RoleId),
                 refreshToken,
                 user.Email,
                 user.FullName
@@ -68,9 +71,8 @@ namespace TheSeatLineApi.AuthServices.Business
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
-
             return new AuthResponseDto(
-                _jwt.GenerateToken(user.Email, user.FullName, user.Role),
+                _jwt.GenerateToken(user.Email, user.FullName, user.RoleId),
                 newRefreshToken,
                 user.Email,
                 user.FullName
@@ -102,12 +104,13 @@ namespace TheSeatLineApi.AuthServices.Business
                     FullName = payload.Name,
                     Email = payload.Email,
                     IsEmailVerified = payload.EmailVerified, 
-                    PasswordHash = null 
+                    PasswordHash = null,
+                    RoleId = UserRole.User,
                 };
                 await _userRepo.AddAsync(user);
             }
 
-            var accessToken = _jwt.GenerateToken(user.Email, user.FullName, user.Email);
+            var accessToken = _jwt.GenerateToken(user.Email, user.FullName, user.RoleId);
             var refreshToken = _jwt.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
@@ -133,7 +136,7 @@ namespace TheSeatLineApi.AuthServices.Business
                 throw new Exception("Invalid Refresh Token");
             }
 
-            var newAccessToken = _jwt.GenerateToken(user.Email, user.FullName, user.Role);
+            var newAccessToken = _jwt.GenerateToken(user.Email, user.FullName, user.RoleId);
             var newRefreshToken = _jwt.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;
