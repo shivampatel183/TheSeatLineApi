@@ -1,4 +1,5 @@
-﻿using static TheSeatLineApi.MasterServices.DTOs.EventDTOs;
+﻿using TheSeatLineApi.MasterServices.DTOs;
+using static TheSeatLineApi.MasterServices.DTOs.EventDTOs;
 
 namespace TheSeatLineApi.MasterServices.Repository
 {
@@ -13,6 +14,11 @@ namespace TheSeatLineApi.MasterServices.Repository
             Task<int> UpdateEvent(EventInsertDTO dto);
 
             Task<int> DeleteEvent(int eventId);
+
+            // Location-based queries
+            Task<List<EventSelectDTO>> GetEventsByCityAsync(int cityId, DateTime? fromDate = null, DateTime? toDate = null);
+            
+            Task<List<EventSelectDTO>> GetNearbyEventsAsync(EventLocationQueryDto query);
         
     }
 }

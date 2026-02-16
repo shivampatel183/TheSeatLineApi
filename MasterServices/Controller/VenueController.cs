@@ -9,6 +9,7 @@ namespace TheSeatLineApi.MasterServices.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VenueController : ControllerBase
     {
         private readonly IVenueRepository venueRepository;
@@ -18,7 +19,7 @@ namespace TheSeatLineApi.MasterServices.Controller
             this.venueRepository = venueRepository;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User")]
         [HttpGet("GetVenue")]
         public async Task<Response<List<VenueSelectDTO>>> GetVenue()
         {

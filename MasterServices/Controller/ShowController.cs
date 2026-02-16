@@ -8,6 +8,7 @@ namespace TheSeatLineApi.MasterServices.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ShowController : ControllerBase
     {
         private readonly IShowRepository showRepository;

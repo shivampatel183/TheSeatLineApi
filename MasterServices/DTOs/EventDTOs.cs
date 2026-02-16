@@ -28,6 +28,8 @@
 
             public string Title { get; set; }
 
+            public string? Description { get; set; }
+
             public string? Language { get; set; }
 
             public int DurationMinutes { get; set; }
@@ -37,6 +39,13 @@
             public string? TrailerUrl { get; set; }
 
             public DateTime? ReleaseDate { get; set; }
+
+            // Location-related fields
+            public List<int>? CityIds { get; set; }
+            public List<string>? CityNames { get; set; }
+            public List<string>? VenueNames { get; set; }
+            public double? DistanceKm { get; set; }
+            public List<DateTime>? UpcomingShowDates { get; set; }
         }
     }
 }

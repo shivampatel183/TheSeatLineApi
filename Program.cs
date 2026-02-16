@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using TheSeatLineApi.AuthServices.Business;
 using TheSeatLineApi.AuthServices.Helpers;
 using TheSeatLineApi.AuthServices.Repository;
+using TheSeatLineApi.BookingServices.Business;
+using TheSeatLineApi.BookingServices.Repository;
 using TheSeatLineApi.Data;
 using TheSeatLineApi.MasterServices.Business;
 using TheSeatLineApi.MasterServices.Repository;
@@ -52,15 +54,21 @@ namespace TheSeatLineApi
                     };
                 });
 
-
+            // Auth Services
             builder.Services.AddScoped<IUserRepository, UserBusiness>();
             builder.Services.AddScoped<IAuthService, AuthBusiness>();
-            builder.Services.AddScoped<ICityRepository, CityBusiness>();
             builder.Services.AddSingleton<JwtTokenGenerator>();
+
+            // Master Services
+            builder.Services.AddScoped<ICityRepository, CityBusiness>();
             builder.Services.AddScoped<IVenueRepository, VenueBusiness>();
             builder.Services.AddScoped<IEventRepository, EventBusiness>();
             builder.Services.AddScoped<IShowRepository, ShowBusiness>();
             builder.Services.AddScoped<IShowSeatCategoryRepository, ShowSeatCategoryBusiness>();
+
+            // Booking Services
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddScoped<IBookingBusiness, BookingBusiness>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
