@@ -43,10 +43,10 @@ namespace TheSeatLineApi.AuthServices.Business
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-            await _userRepo.AddAsync(user);
+            user.Id = await _userRepo.AddAsync(user);
 
             return new AuthResponseDto(
-                _jwt.GenerateToken(user.Email, user.FullName, user.RoleId),
+                _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId),
                 refreshToken,
                 user.Email,
                 user.FullName
@@ -72,7 +72,7 @@ namespace TheSeatLineApi.AuthServices.Business
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return new AuthResponseDto(
-                _jwt.GenerateToken(user.Email, user.FullName, user.RoleId),
+                _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId),
                 newRefreshToken,
                 user.Email,
                 user.FullName
@@ -107,10 +107,10 @@ namespace TheSeatLineApi.AuthServices.Business
                     PasswordHash = null,
                     RoleId = UserRole.User,
                 };
-                await _userRepo.AddAsync(user);
+                user.Id = await _userRepo.AddAsync(user);
             }
 
-            var accessToken = _jwt.GenerateToken(user.Email, user.FullName, user.RoleId);
+            var accessToken = _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId);
             var refreshToken = _jwt.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
@@ -136,7 +136,7 @@ namespace TheSeatLineApi.AuthServices.Business
                 throw new Exception("Invalid Refresh Token");
             }
 
-            var newAccessToken = _jwt.GenerateToken(user.Email, user.FullName, user.RoleId);
+            var newAccessToken = _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId);
             var newRefreshToken = _jwt.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;

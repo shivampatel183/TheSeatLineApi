@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using TheSeatLineApi.AuthServices.Entity;
 using TheSeatLineApi.Common.Enums;
 
 namespace TheSeatLineApi.AuthServices.Helpers
@@ -16,10 +17,11 @@ namespace TheSeatLineApi.AuthServices.Helpers
             _config = config;
         }
 
-        public string GenerateToken(string email, string name, UserRole role)
+        public string GenerateToken(Guid Id,string email, string name, UserRole role)
         {
             var claims = new[]
             {
+                new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Name, name),
                 new Claim(ClaimTypes.Role, role.ToString()),

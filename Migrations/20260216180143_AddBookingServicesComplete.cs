@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TheSeatLineApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddBookingEntity : Migration
+    public partial class AddBookingServicesComplete : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -165,7 +165,10 @@ namespace TheSeatLineApi.Migrations
                     ExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ConfirmedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CancelledAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CancellationReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    CancellationReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    OriginalUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TransferredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TransferNote = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {

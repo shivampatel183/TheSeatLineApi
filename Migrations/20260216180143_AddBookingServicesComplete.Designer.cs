@@ -12,8 +12,8 @@ using TheSeatLineApi.Data;
 namespace TheSeatLineApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260216164916_AddBookingTransferFields")]
-    partial class AddBookingTransferFields
+    [Migration("20260216180143_AddBookingServicesComplete")]
+    partial class AddBookingServicesComplete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

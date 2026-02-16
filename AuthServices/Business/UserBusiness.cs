@@ -21,10 +21,11 @@ namespace TheSeatLineApi.AuthServices.Business
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task AddAsync(User user)
+        public async Task<Guid> AddAsync(User user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+            return user.Id;
         }
     }
 }
