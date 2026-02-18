@@ -6,5 +6,6 @@ namespace TheSeatLineApi.AuthServices.Repository
     {
         Task<User?> GetByEmailAsync(string email);
         Task<Guid> AddAsync(User user);
+        Task UpdateAsync(User user);
     }
 }
