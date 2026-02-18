@@ -1,5 +1,4 @@
-﻿using TheSeatLineApi.AuthServices.Entity;
-
+﻿
 namespace TheSeatLineApi.AuthServices.Repository
 {
     public interface IUserRepository

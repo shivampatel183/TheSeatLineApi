@@ -3,7 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using TheSeatLineApi.AuthServices.Entity;
 using TheSeatLineApi.Common.Enums;
 
 namespace TheSeatLineApi.AuthServices.Helpers

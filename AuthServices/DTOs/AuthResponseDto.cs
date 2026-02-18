@@ -2,9 +2,9 @@
 
 public record AuthResponseDto
 {
-    public string AccessToken { get; init; }
-    public string RefreshToken { get; init; }
-    public DateTime ExpiresAt { get; init; }
-    public string TokenType { get; init; } = "Bearer";
-    public UserProfileDto User { get; init; }
+    public string AccessToken { get; set; }
+    public string RefreshToken { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public string TokenType { get; set; } = "Bearer";
+    public UserProfileDto User { get; set; }
 }

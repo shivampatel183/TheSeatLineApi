@@ -17,7 +17,7 @@ namespace TheSeatLineApi.AuthServices.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<Response<AuthResponseDto>> Register([FromBody] RegisterDto dto)
+        public async Task<Response<AuthResponseDto>> Register(RegisterRequestDto dto)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace TheSeatLineApi.AuthServices.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<Response<AuthResponseDto>> Login([FromBody] LoginDto dto)
+        public async Task<Response<AuthResponseDto>> Login(LoginRequestDto dto)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace TheSeatLineApi.AuthServices.Controllers
         }
 
         [HttpPost("google-login")]
-        public async Task<Response<AuthResponseDto>> GoogleLogin([FromBody] GoogleLoginDto dto)
+        public async Task<Response<AuthResponseDto>> GoogleLogin(GoogleLoginDto dto)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace TheSeatLineApi.AuthServices.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<Response<AuthResponseDto>> RefreshToken([FromBody] RefreshTokenDto dto)
+        public async Task<Response<AuthResponseDto>> RefreshToken(RefreshTokenDto dto)
         {
             try
             {

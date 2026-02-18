@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TheSeatLineApi.AuthServices.Entity;
 using TheSeatLineApi.AuthServices.Repository;
 using TheSeatLineApi.Data;
 

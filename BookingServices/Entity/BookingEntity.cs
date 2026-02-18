@@ -1,63 +1,34 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using TheSeatLineApi.AuthServices.Entity;
-using TheSeatLineApi.Common.Enums;
-using TheSeatLineApi.Entity;
-
-namespace TheSeatLineApi.BookingServices.Entity
+﻿public class Booking : BaseEntity
 {
-    public class BookingEntity
-    {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+    public string BookingReference { get; set; } = null!;
 
-        [Required]
-        public Guid UserId { get; set; }
+    public Guid TenantId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid EventId { get; set; }
 
-        [Required]
-        public int ShowId { get; set; }
+    public byte Status { get; set; }
+    public byte BookingSource { get; set; }
 
-        [Required]
-        public int ShowSeatCategoryId { get; set; }
+    public decimal SubTotal { get; set; }
+    public decimal DiscountAmount { get; set; }
+    public decimal TaxAmount { get; set; }
+    public decimal ConvenienceFee { get; set; }
+    public decimal TotalAmount { get; set; }
 
-        [Required]
-        [Range(1, 10)]
-        public int NumberOfSeats { get; set; }
+    public string Currency { get; set; } = "INR";
 
-        [Required]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal TotalAmount { get; set; }
+    public DateTime? HoldExpiresAt { get; set; }
+    public string? SpecialRequests { get; set; }
 
-        [Required]
-        public BookingStatus BookingStatus { get; set; } = BookingStatus.Pending;
+    public Guid? CancellationPolicyId { get; set; }
+    public DateTime? CancelledAt { get; set; }
+    public string? CancellationReason { get; set; }
 
-        public DateTime BookingDate { get; set; } = DateTime.UtcNow;
+    public bool IsDeleted { get; set; }
 
-        public DateTime? ExpiryTime { get; set; }
+    public User User { get; set; } = null!;
+    public Event Event { get; set; } = null!;
 
-        public DateTime? ConfirmedAt { get; set; }
-
-        public DateTime? CancelledAt { get; set; }
-
-        [MaxLength(500)]
-        public string? CancellationReason { get; set; }
-
-        // Transfer tracking
-        public Guid? OriginalUserId { get; set; }
-
-        public DateTime? TransferredAt { get; set; }
-
-        [MaxLength(500)]
-        public string? TransferNote { get; set; }
-
-        // Navigation Properties
-        [ForeignKey("UserId")]
-        public User User { get; set; }
-
-        [ForeignKey("ShowId")]
-        public ShowEntity Show { get; set; }
-
-        [ForeignKey("ShowSeatCategoryId")]
-        public ShowSeatCategoryEntity ShowSeatCategory { get; set; }
-    }
+    public ICollection<BookingSeat> BookingSeats { get; set; } = new List<BookingSeat>();
+    public Payment? Payment { get; set; }
 }
