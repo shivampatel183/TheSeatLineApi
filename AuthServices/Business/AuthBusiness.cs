@@ -1,12 +1,8 @@
-﻿using TheSeatLineApi.AuthServices.DTOs;
+﻿using Google.Apis.Auth;
+using TheSeatLineApi.AuthServices.DTOs;
+using TheSeatLineApi.AuthServices.Entity;
 using TheSeatLineApi.AuthServices.Helpers;
 using TheSeatLineApi.AuthServices.Repository;
-using TheSeatLineApi;
-using TheSeatLineApi.AuthServices.Entity;
-using Microsoft.EntityFrameworkCore;
-using TheSeatLineApi.Data;
-using Google.Apis.Auth;
-using System.Data;
 using TheSeatLineApi.Common.Enums;
 
 namespace TheSeatLineApi.AuthServices.Business
@@ -15,14 +11,12 @@ namespace TheSeatLineApi.AuthServices.Business
     {
         private readonly IUserRepository _userRepo;
         private readonly JwtTokenGenerator _jwt;
-        private readonly AppDbContext _context;
         private readonly IConfiguration _config;
 
-        public AuthBusiness(IUserRepository userRepo, JwtTokenGenerator jwt, AppDbContext context, IConfiguration config)
+        public AuthBusiness(IUserRepository userRepo, JwtTokenGenerator jwt, IConfiguration config)
         {
             _userRepo = userRepo;
             _jwt = jwt;
-            _context = context;
             _config = config;
         }
 
@@ -38,19 +32,14 @@ namespace TheSeatLineApi.AuthServices.Business
                 PasswordHash = PasswordHasher.Hash(dto.Password),
                 IsEmailVerified = false,
                 RoleId = UserRole.User,
+                UserStatus = UserStatus.Active
             };
-            var refreshToken = _jwt.GenerateRefreshToken();
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
+            user.RefreshToken = _jwt.GenerateRefreshToken();
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             user.Id = await _userRepo.AddAsync(user);
 
-            return new AuthResponseDto(
-                _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId),
-                refreshToken,
-                user.Email,
-                user.FullName
-            );
+            return BuildAuthResponse(user, user.RefreshToken);
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
@@ -64,19 +53,12 @@ namespace TheSeatLineApi.AuthServices.Business
             if (!PasswordHasher.Verify(dto.Password, user.PasswordHash))
                 throw new Exception("Invalid credentials");
 
-
-            var newRefreshToken = _jwt.GenerateRefreshToken();
-            user.RefreshToken = newRefreshToken;
+            user.RefreshToken = _jwt.GenerateRefreshToken();
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return new AuthResponseDto(
-                _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId),
-                newRefreshToken,
-                user.Email,
-                user.FullName
-            );
+            await _userRepo.UpdateAsync(user);
+
+            return BuildAuthResponse(user, user.RefreshToken);
         }
 
         public async Task<AuthResponseDto> LoginWithGoogleAsync(string googleIdToken)
@@ -84,9 +66,9 @@ namespace TheSeatLineApi.AuthServices.Business
             GoogleJsonWebSignature.Payload payload;
             try
             {
-                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                var settings = new GoogleJsonWebSignature.ValidationSettings
                 {
-                    Audience = new List<string> { _config["Google:client_id"]! } 
+                    Audience = new List<string> { _config["Google:client_id"]! }
                 };
                 payload = await GoogleJsonWebSignature.ValidateAsync(googleIdToken, settings);
             }
@@ -103,23 +85,21 @@ namespace TheSeatLineApi.AuthServices.Business
                 {
                     FullName = payload.Name,
                     Email = payload.Email,
-                    IsEmailVerified = payload.EmailVerified, 
+                    IsEmailVerified = payload.EmailVerified,
                     PasswordHash = null,
                     RoleId = UserRole.User,
+                    UserStatus = UserStatus.Active
                 };
+
                 user.Id = await _userRepo.AddAsync(user);
             }
 
-            var accessToken = _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId);
-            var refreshToken = _jwt.GenerateRefreshToken();
-
-            user.RefreshToken = refreshToken;
+            user.RefreshToken = _jwt.GenerateRefreshToken();
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-            _context.Users.Update(user); 
-            await _context.SaveChangesAsync();
+            await _userRepo.UpdateAsync(user);
 
-            return new AuthResponseDto(accessToken, refreshToken, user.Email, user.FullName);
+            return BuildAuthResponse(user, user.RefreshToken);
         }
 
         public async Task<AuthResponseDto> RefreshTokenAsync(RefreshTokenDto dto)
@@ -127,23 +107,36 @@ namespace TheSeatLineApi.AuthServices.Business
             var principal = _jwt.GetPrincipalFromExpiredToken(dto.AccessToken);
             var email = principal?.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
 
-            if (email == null) throw new Exception("Invalid Token");
+            if (email == null)
+                throw new Exception("Invalid Token");
 
             var user = await _userRepo.GetByEmailAsync(email);
 
             if (user == null || user.RefreshToken != dto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-            {
                 throw new Exception("Invalid Refresh Token");
-            }
 
-            var newAccessToken = _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId);
             var newRefreshToken = _jwt.GenerateRefreshToken();
-
             user.RefreshToken = newRefreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            await _context.SaveChangesAsync();
 
-            return new AuthResponseDto(newAccessToken, newRefreshToken, user.Email, user.FullName);
+            await _userRepo.UpdateAsync(user);
+
+            return new AuthResponseDto(
+                _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId),
+                newRefreshToken,
+                user.Email,
+                user.FullName
+            );
+        }
+
+        private AuthResponseDto BuildAuthResponse(User user, string? refreshToken)
+        {
+            return new AuthResponseDto(
+                _jwt.GenerateToken(user.Id, user.Email, user.FullName, user.RoleId),
+                refreshToken ?? string.Empty,
+                user.Email,
+                user.FullName
+            );
         }
     }
 }

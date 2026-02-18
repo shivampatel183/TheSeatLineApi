@@ -17,7 +17,6 @@ namespace TheSeatLineApi.AuthServices.Business
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users
-                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
@@ -26,6 +25,12 @@ namespace TheSeatLineApi.AuthServices.Business
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user.Id;
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
         }
     }
 }
