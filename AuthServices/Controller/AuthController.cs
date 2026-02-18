@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TheSeatLineApi.AuthServices.DTOs;
-using TheSeatLineApi.AuthServices.Entity;
 using TheSeatLineApi.AuthServices.Repository;
 using TheSeatLineApi.Common;
 
@@ -19,28 +17,28 @@ namespace TheSeatLineApi.AuthServices.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<Response<AuthResponseDto>> Register(RegisterDto dto)
+        public async Task<Response<AuthResponseDto>> Register([FromBody] RegisterDto dto)
         {
             try
             {
-                return Response<AuthResponseDto>.Ok(await _authService.RegisterAsync(dto), "Regestration Success");
+                return Response<AuthResponseDto>.Ok(await _authService.RegisterAsync(dto), "Registration success");
             }
-            catch
+            catch (Exception ex)
             {
-                return Response<AuthResponseDto>.Fail("User Exiest");
+                return Response<AuthResponseDto>.Fail(ex.Message);
             }
         }
 
         [HttpPost("login")]
-        public async Task<Response<AuthResponseDto>> Login(LoginDto dto)
+        public async Task<Response<AuthResponseDto>> Login([FromBody] LoginDto dto)
         {
             try
             {
                 return Response<AuthResponseDto>.Ok(await _authService.LoginAsync(dto));
             }
-            catch
+            catch (Exception ex)
             {
-                return Response<AuthResponseDto>.Fail("Invalid Credentials");
+                return Response<AuthResponseDto>.Fail(ex.Message);
             }
         }
 
@@ -64,11 +62,10 @@ namespace TheSeatLineApi.AuthServices.Controllers
             {
                 return Response<AuthResponseDto>.Ok(await _authService.RefreshTokenAsync(dto));
             }
-            catch
+            catch (Exception ex)
             {
-                return Response<AuthResponseDto>.Fail("Invalid Token");
+                return Response<AuthResponseDto>.Fail(ex.Message);
             }
         }
     }
 }
-
