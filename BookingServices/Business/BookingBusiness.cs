@@ -349,31 +349,101 @@ namespace TheSeatLineApi.BookingServices.Business
 
         private BookingResponseDto MapToResponseDto(BookingEntity booking)
         {
+            // Generate seat details based on number of seats
+            var seats = new List<BookingSeatDto>();
+            var pricePerSeat = booking.ShowSeatCategory.Price;
+            
+            for (int i = 0; i < booking.NumberOfSeats; i++)
+            {
+                // Generate seat number (A1, A2, B1, B2, etc.)
+                int rowIndex = i / 10; // 10 seats per row
+                int columnIndex = (i % 10) + 1;
+                char rowLetter = (char)('A' + rowIndex);
+                
+                seats.Add(new BookingSeatDto
+                {
+                    Id = i + 1,
+                    BookingId = booking.Id,
+                    SeatId = i + 1, // Placeholder
+                    SeatNumber = $"{rowLetter}{columnIndex}",
+                    SeatType = booking.ShowSeatCategory.SeatCategoryName,
+                    Price = pricePerSeat,
+                    Row = rowLetter.ToString(),
+                    Column = columnIndex
+                });
+            }
+
+            // Calculate total capacity from all seat categories for this show
+            var totalCapacity = booking.Show.ShowSeatCategories?.Sum(sc => sc.TotalSeats) ?? 0;
+            var totalAvailable = booking.Show.ShowSeatCategories?.Sum(sc => sc.AvailableSeats) ?? 0;
+
+            // Map payment status based on booking status
+            string paymentStatus = booking.BookingStatus switch
+            {
+                BookingStatus.Confirmed => "Paid",
+                BookingStatus.Pending => "Pending",
+                BookingStatus.Failed => "Failed",
+                BookingStatus.Cancelled => "Refunded",
+                BookingStatus.Refunded => "Refunded",
+                _ => "Unknown"
+            };
+
             return new BookingResponseDto
             {
-                BookingId = booking.Id,
-                NumberOfSeats = booking.NumberOfSeats,
-                TotalAmount = booking.TotalAmount,
-                BookingStatus = booking.BookingStatus,
+                Id = booking.Id.GetHashCode(), // Convert Guid to int for response
+                UserId = booking.UserId,
+                VenueId = booking.Show.VenueId,
+                ShowId = booking.ShowId,
                 BookingDate = booking.BookingDate,
-                ExpiryTime = booking.ExpiryTime,
-                ConfirmedAt = booking.ConfirmedAt,
-                CancelledAt = booking.CancelledAt,
-                CancellationReason = booking.CancellationReason,
+                TotalAmount = booking.TotalAmount,
+                Status = booking.BookingStatus.ToString(),
+                PaymentStatus = paymentStatus,
+                CreatedAt = booking.BookingDate,
+                UpdatedAt = booking.ConfirmedAt ?? booking.CancelledAt ?? booking.TransferredAt,
+                
+                // Transfer details
                 OriginalUserId = booking.OriginalUserId,
-                OriginalUserName = null, // Can be populated if needed with additional query
+                OriginalUserName = null, // Can be populated if needed
                 TransferredAt = booking.TransferredAt,
                 TransferNote = booking.TransferNote,
-                ShowId = booking.ShowId,
-                ShowTime = booking.Show.ShowTime,
-                EventId = booking.Show.EventId,
-                EventName = booking.Show.Event.Title,
-                VenueId = booking.Show.VenueId,
-                VenueName = booking.Show.Venue.Name,
-                VenueCity = booking.Show.Venue.City.Name,
-                ShowSeatCategoryId = booking.ShowSeatCategoryId,
-                SeatCategoryName = booking.ShowSeatCategory.SeatCategoryName,
-                PricePerSeat = booking.ShowSeatCategory.Price
+                
+                // Expiry and cancellation
+                ExpiryTime = booking.ExpiryTime,
+                CancelledAt = booking.CancelledAt,
+                CancellationReason = booking.CancellationReason,
+                
+                // Nested seat details
+                Seats = seats,
+                
+                // Nested venue details
+                Venue = new VenueDetailDto
+                {
+                    Id = booking.Show.Venue.Id,
+                    Name = booking.Show.Venue.Name,
+                    Address = booking.Show.Venue.Address,
+                    City = booking.Show.Venue.City.Name,
+                    State = null, // Add if you have state field
+                    ZipCode = null, // Add if you have zipcode field
+                    ImageUrl = null, // Add if you have venue images
+                    Description = null, // Add if you have venue description
+                    Capacity = totalCapacity
+                },
+                
+                // Nested show details
+                Show = new ShowDetailDto
+                {
+                    Id = booking.Show.Id,
+                    VenueId = booking.Show.VenueId,
+                    Title = booking.Show.Event.Title,
+                    Description = booking.Show.Event.Description,
+                    ShowDate = booking.Show.ShowTime,
+                    ShowTime = booking.Show.ShowTime.ToString("h:mm tt"),
+                    Duration = booking.Show.Event.DurationMinutes,
+                    Genre = booking.Show.Event.Language, // Using language as genre for now
+                    ImageUrl = booking.Show.Event.PosterUrl,
+                    Price = pricePerSeat,
+                    AvailableSeats = totalAvailable
+                }
             };
         }
     }

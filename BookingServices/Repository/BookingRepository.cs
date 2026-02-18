@@ -30,6 +30,8 @@ namespace TheSeatLineApi.BookingServices.Repository
                 .Include(b => b.Show)
                     .ThenInclude(s => s.Venue)
                         .ThenInclude(v => v.City)
+                .Include(b => b.Show)
+                    .ThenInclude(s => s.ShowSeatCategories)
                 .Include(b => b.ShowSeatCategory)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
         }
@@ -42,6 +44,8 @@ namespace TheSeatLineApi.BookingServices.Repository
                 .Include(b => b.Show)
                     .ThenInclude(s => s.Venue)
                         .ThenInclude(v => v.City)
+                .Include(b => b.Show)
+                    .ThenInclude(s => s.ShowSeatCategories)
                 .Include(b => b.ShowSeatCategory)
                 .Where(b => b.UserId == userId)
                 .OrderByDescending(b => b.BookingDate)

@@ -1,4 +1,6 @@
-﻿namespace TheSeatLineApi.MasterServices.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TheSeatLineApi.MasterServices.DTOs
 {
     public class VenueSelectDTO
     {
@@ -12,21 +14,38 @@
 
         public string? Address { get; set; }
     }
-    public class VenueInsertDTO
+    public record CreateVenueRequestDto
     {
-        public int Id { get; set; }
+        [Required, MaxLength(200)]
+        public string Name { get; init; } = null!;
 
-        public string Name { get; set; }
+        [Required]
+        public byte VenueType { get; init; }
 
-        public int CityId { get; set; }
+        [Required]
+        public string AddressLine1 { get; init; } = null!;
 
-        public string? Address { get; set; }
+        [Required]
+        public string City { get; init; } = null!;
 
-        public decimal? Latitude { get; set; }
+        [Required]
+        public string State { get; init; } = null!;
 
-        public decimal? Longitude { get; set; }
+        [Required]
+        public string Country { get; init; } = null!;
 
-        public bool IsActive { get; set; }
+        [Required]
+        public string PostalCode { get; init; } = null!;
+
+        public string? Description { get; init; }
+    }
+
+    public record VenueSummaryDto
+    {
+        public Guid Id { get; init; }
+        public string Name { get; init; } = null!;
+        public string City { get; init; } = null!;
+        public string State { get; init; } = null!;
     }
 
 }

@@ -1,26 +1,36 @@
-﻿namespace TheSeatLineApi.MasterServices.Entity
+﻿using Microsoft.Extensions.Logging;
+
+public class Venue : BaseEntity
 {
-    public class VenueEntity
-    {
-        public int Id { get; set; }
+    public Guid TenantId { get; set; }
+    public string Name { get; set; } = null!;
+    public byte VenueType { get; set; }
 
-        public string Name { get; set; }
+    public string? Description { get; set; }
 
-        public int CityId { get; set; }
+    public string AddressLine1 { get; set; } = null!;
+    public string? AddressLine2 { get; set; }
+    public string City { get; set; } = null!;
+    public string State { get; set; } = null!;
+    public string Country { get; set; } = null!;
+    public string PostalCode { get; set; } = null!;
 
-        public string? Address { get; set; }
+    public decimal? Latitude { get; set; }
+    public decimal? Longitude { get; set; }
 
-        public decimal? Latitude { get; set; }
+    public string Timezone { get; set; } = null!;
+    public int TotalCapacity { get; set; }
 
-        public decimal? Longitude { get; set; }
+    public string? Amenities { get; set; }
+    public string? AccessibilityFeatures { get; set; }
+    public string? MediaGallery { get; set; }
 
-        public bool IsActive { get; set; }
+    public string? ContactEmail { get; set; }
+    public string? ContactPhone { get; set; }
+    public string? WebsiteUrl { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+    public bool IsActive { get; set; } = true;
+    public bool IsDeleted { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
-
-        public CityEntity City { get; set; }
-    }
-
+    public ICollection<Event> Events { get; set; } = new List<Event>();
 }
