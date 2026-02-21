@@ -1,19 +1,9 @@
 ﻿namespace TheSeatLineApi.MasterServices.DTOs
 {
-    public class CityInsertDTO
+    public record CitySelectDto
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string State { get; set; }
-        public string Country { get; set; }
-        public string Slug { get; set; }
-        public bool IsActive { get; set; } = true;
-
-    }
-    public class CitySelectDTO
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Slug { get; set; }
+        public string Name { get; init; }
+        public string State { get; init; }
+        public string Country { get; init; }
     }
 }

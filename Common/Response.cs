@@ -31,9 +31,5 @@ namespace TheSeatLineApi.Common
             };
         }
 
-        internal static Response<CitySelectDTO> Ok(object value)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

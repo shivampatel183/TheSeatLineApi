@@ -135,10 +135,7 @@ namespace TheSeatLineApi.AuthServices.Business
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-                IsEmailVerified = user.IsEmailVerified,
-                IsActive = user.IsActive,
-                CreatedAt = user.CreatedAt
+                PhoneNumber = user.PhoneNumber
             };
             return new AuthResponseDto {
                 AccessToken = _jwt.GenerateToken(user.Id, user.Email, user.FirstName, (UserRole)user.UserType),

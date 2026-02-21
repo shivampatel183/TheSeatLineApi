@@ -5,6 +5,7 @@ using TheSeatLineApi.AuthServices.Business;
 using TheSeatLineApi.AuthServices.Helpers;
 using TheSeatLineApi.AuthServices.Repository;
 using TheSeatLineApi.Data;
+using TheSeatLineApi.MasterServices.Business;
 
 namespace TheSeatLineApi
 {
@@ -54,9 +55,10 @@ namespace TheSeatLineApi
             builder.Services.AddScoped<IUserRepository, UserBusiness>();
             builder.Services.AddScoped<IAuthService, AuthBusiness>();
             builder.Services.AddSingleton<JwtTokenGenerator>();
+            
 
             // Master Services
-            //builder.Services.AddScoped<ICityRepository, CityBusiness>();
+            builder.Services.AddScoped<ICityRepository, CityBusiness>();
             //builder.Services.AddScoped<IVenueRepository, VenueBusiness>();
             //builder.Services.AddScoped<IEventRepository, EventBusiness>();
             //builder.Services.AddScoped<IShowRepository, ShowBusiness>();
