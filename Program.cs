@@ -6,6 +6,10 @@ using TheSeatLineApi.AuthServices.Helpers;
 using TheSeatLineApi.AuthServices.Repository;
 using TheSeatLineApi.Data;
 using TheSeatLineApi.MasterServices.Business;
+using TheSeatLineApi.MasterServices.Repository;
+using TheSeatLineApi.BookingServices.Business;
+using TheSeatLineApi.BookingServices.Repository;
+using TheSeatLineApi.Common.Middleware;
 
 namespace TheSeatLineApi
 {
@@ -59,14 +63,17 @@ namespace TheSeatLineApi
 
             // Master Services
             builder.Services.AddScoped<ICityRepository, CityBusiness>();
-            //builder.Services.AddScoped<IVenueRepository, VenueBusiness>();
-            //builder.Services.AddScoped<IEventRepository, EventBusiness>();
-            //builder.Services.AddScoped<IShowRepository, ShowBusiness>();
-            //builder.Services.AddScoped<IShowSeatCategoryRepository, ShowSeatCategoryBusiness>();
+            builder.Services.AddScoped<IVenueRepository, VenueBusiness>();
+            builder.Services.AddScoped<IEventRepository, EventBusiness>();
+            builder.Services.AddScoped<ISeatRepository, SeatBusiness>();
 
             // Booking Services
-            //builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-            //builder.Services.AddScoped<IBookingBusiness, BookingBusiness>();
+            builder.Services.AddScoped<IBookingRepository, BookingBusiness>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentBusiness>();
+            builder.Services.AddScoped<ICouponRepository, CouponBusiness>();
+
+            // Review Service
+            builder.Services.AddScoped<IReviewRepository, ReviewBusiness>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -103,6 +110,7 @@ namespace TheSeatLineApi
             var app = builder.Build();
 
             app.UseCors("AllowAngular");
+            app.UseMiddleware<ExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {

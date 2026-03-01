@@ -4,14 +4,12 @@ namespace TheSeatLineApi.BookingServices.DTOs
 {
     public class CreateBookingRequestDto
     {
-        [Required(ErrorMessage = "ShowId is required")]
-        public int ShowId { get; set; }
+        [Required]
+        public Guid EventId { get; set; }
 
-        [Required(ErrorMessage = "ShowSeatCategoryId is required")]
-        public int ShowSeatCategoryId { get; set; }
+        [Required]
+        public List<Guid> SeatIds { get; set; } = new();
 
-        [Required(ErrorMessage = "NumberOfSeats is required")]
-        [Range(1, 10, ErrorMessage = "Number of seats must be between 1 and 10")]
-        public int NumberOfSeats { get; set; }
+        public string? SpecialRequests { get; set; }
     }
 }

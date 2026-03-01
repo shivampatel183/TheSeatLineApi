@@ -4,16 +4,13 @@ namespace TheSeatLineApi.MasterServices.DTOs
 {
     public class VenueSelectDTO
     {
-        public int Id { get; set; }
-
+        public Guid Id { get; set; }
         public string Name { get; set; }
-
-        public int CityId { get; set; }
-
+        public Guid CityId { get; set; }
         public string CityName { get; set; }
-
         public string? Address { get; set; }
     }
+
     public record CreateVenueRequestDto
     {
         [Required, MaxLength(200)]
@@ -26,16 +23,16 @@ namespace TheSeatLineApi.MasterServices.DTOs
         public string AddressLine1 { get; init; } = null!;
 
         [Required]
-        public string City { get; init; } = null!;
-
-        [Required]
-        public string State { get; init; } = null!;
-
-        [Required]
-        public string Country { get; init; } = null!;
+        public Guid CityId { get; init; }
 
         [Required]
         public string PostalCode { get; init; } = null!;
+
+        [Required]
+        public string Timezone { get; init; } = null!;
+
+        [Required]
+        public int TotalCapacity { get; init; }
 
         public string? Description { get; init; }
     }
@@ -47,5 +44,5 @@ namespace TheSeatLineApi.MasterServices.DTOs
         public string City { get; init; } = null!;
         public string State { get; init; } = null!;
     }
-
 }
+

@@ -1,5 +1,6 @@
-﻿public class BookingSeat : BaseEntity
+﻿public class BookingSeat
 {
+    public Guid Id { get; set; } = Guid.NewGuid();
     public Guid BookingId { get; set; }
     public Guid SeatId { get; set; }
 

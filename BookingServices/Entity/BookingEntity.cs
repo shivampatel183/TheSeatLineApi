@@ -26,6 +26,9 @@
 
     public bool IsDeleted { get; set; }
 
+    public Guid? CreatedBy { get; set; }
+    public Guid? UpdatedBy { get; set; }
+
     public User User { get; set; } = null!;
     public Event Event { get; set; } = null!;
 

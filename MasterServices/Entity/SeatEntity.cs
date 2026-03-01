@@ -1,4 +1,6 @@
-﻿public class Seat : BaseEntity
+﻿using System.ComponentModel.DataAnnotations;
+
+public class Seat : BaseEntity
 {
     public Guid EventId { get; set; }
 
@@ -18,6 +20,7 @@
 
     public Guid? GroupId { get; set; }
 
+    [Timestamp]
     public byte[] RowVersion { get; set; } = null!;
 
     public Event Event { get; set; } = null!;

@@ -1,5 +1,7 @@
-﻿public class Coupon : BaseEntity
+﻿public class Coupon
 {
+    public Guid Id { get; set; } = Guid.NewGuid();
+
     public Guid TenantId { get; set; }
 
     public string Code { get; set; } = null!;
@@ -21,4 +23,6 @@
     public string? ApplicableEventIds { get; set; }
 
     public bool IsActive { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

@@ -64,12 +64,14 @@ namespace TheSeatLineApi.AuthServices.Business
         public async Task<AuthResponseDto> LoginWithGoogleAsync(string googleIdToken)
         {
             GoogleJsonWebSignature.Payload payload;
+
             try
             {
                 var settings = new GoogleJsonWebSignature.ValidationSettings
                 {
                     Audience = new List<string> { _config["Google:client_id"]! }
                 };
+
                 payload = await GoogleJsonWebSignature.ValidateAsync(googleIdToken, settings);
             }
             catch
@@ -77,32 +79,31 @@ namespace TheSeatLineApi.AuthServices.Business
                 throw new Exception("Invalid Google Token");
             }
 
-            var user = await _userRepo.GetByEmailAsync(payload.Email);
+            User? user = await _userRepo.GetByEmailAsync(payload.Email);
 
-            user.RefreshToken = _jwt.GenerateRefreshToken();
-            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
-
-            if (user.Email == "")
+            if (user == null)
             {
                 user = new User
                 {
-                    FirstName = payload.Name,
+                    FirstName = payload.GivenName ?? payload.Name,
+                    LastName = payload.FamilyName ?? string.Empty,
                     Email = payload.Email,
-                    IsEmailVerified = payload.EmailVerified,
+                    IsEmailVerified = true,
                     PasswordHash = null,
                     UserType = (int)UserRole.User,
                     IsActive = true,
                     OAuthProvider = "Google",
-                    OAuthId = googleIdToken,
-
+                    OAuthId = payload.Subject
                 };
 
                 user.Id = await _userRepo.AddAsync(user);
-
-
-                return BuildAuthResponse(user);
             }
+
+            user.RefreshToken = _jwt.GenerateRefreshToken();
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
             await _userRepo.UpdateAsync(user);
+
             return BuildAuthResponse(user);
         }
 

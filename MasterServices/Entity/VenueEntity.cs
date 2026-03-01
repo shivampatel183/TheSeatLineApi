@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-public class Venue : BaseEntity
+﻿public class Venue : BaseEntity
 {
     public Guid TenantId { get; set; }
     public string Name { get; set; } = null!;
@@ -10,9 +8,7 @@ public class Venue : BaseEntity
 
     public string AddressLine1 { get; set; } = null!;
     public string? AddressLine2 { get; set; }
-    public string City { get; set; } = null!;
-    public string State { get; set; } = null!;
-    public string Country { get; set; } = null!;
+    public Guid CityId { get; set; }
     public string PostalCode { get; set; } = null!;
 
     public decimal? Latitude { get; set; }
@@ -32,5 +28,10 @@ public class Venue : BaseEntity
     public bool IsActive { get; set; } = true;
     public bool IsDeleted { get; set; }
 
+    public Guid? CreatedBy { get; set; }
+    public Guid? UpdatedBy { get; set; }
+
+    public City City { get; set; } = null!;
     public ICollection<Event> Events { get; set; } = new List<Event>();
+    public ICollection<VenueOperatingHours> OperatingHours { get; set; } = new List<VenueOperatingHours>();
 }

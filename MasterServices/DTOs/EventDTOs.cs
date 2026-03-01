@@ -1,51 +1,56 @@
-﻿namespace TheSeatLineApi.MasterServices.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TheSeatLineApi.MasterServices.DTOs
 {
-    public class EventDTOs
+    public class EventInsertDTO
     {
-        public class EventInsertDTO
-        {
-            public int Id { get; set; }
+        [Required, MaxLength(300)]
+        public string Title { get; set; } = null!;
 
-            public string Title { get; set; }
+        public string? Description { get; set; }
 
-            public string? Description { get; set; }
+        [Required]
+        public Guid VenueId { get; set; }
 
-            public string? Language { get; set; }
+        [Required]
+        public byte EventType { get; set; }
 
-            public int DurationMinutes { get; set; }
+        public string? Tags { get; set; }
 
-            public string? PosterUrl { get; set; }
+        [Required]
+        public DateTime StartDateTime { get; set; }
 
-            public string? TrailerUrl { get; set; }
+        [Required]
+        public DateTime EndDateTime { get; set; }
 
-            public DateTime? ReleaseDate { get; set; }
+        [Required]
+        public string Timezone { get; set; } = null!;
 
-            public bool IsActive { get; set; }
-        }
-        public class EventSelectDTO
-        {
-            public int Id { get; set; }
+        public string? Language { get; set; }
 
-            public string Title { get; set; }
+        [Required]
+        public int MaxCapacity { get; set; }
 
-            public string? Description { get; set; }
+        public string? BannerImageUrl { get; set; }
+        public string? Performers { get; set; }
+    }
 
-            public string? Language { get; set; }
+    public class EventSelectDTO
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; } = null!;
+        public string? Description { get; set; }
+        public byte EventType { get; set; }
+        public string? Language { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public DateTime EndDateTime { get; set; }
+        public string? BannerImageUrl { get; set; }
+        public byte Status { get; set; }
 
-            public int DurationMinutes { get; set; }
-
-            public string? PosterUrl { get; set; }
-
-            public string? TrailerUrl { get; set; }
-
-            public DateTime? ReleaseDate { get; set; }
-
-            // Location-related fields
-            public List<int>? CityIds { get; set; }
-            public List<string>? CityNames { get; set; }
-            public List<string>? VenueNames { get; set; }
-            public double? DistanceKm { get; set; }
-            public List<DateTime>? UpcomingShowDates { get; set; }
-        }
+        // Venue info
+        public Guid VenueId { get; set; }
+        public string VenueName { get; set; } = null!;
+        public string City { get; set; } = null!;
+        public string State { get; set; } = null!;
     }
 }

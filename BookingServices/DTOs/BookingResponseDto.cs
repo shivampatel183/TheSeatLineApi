@@ -4,31 +4,24 @@ namespace TheSeatLineApi.BookingServices.DTOs
 {
     public class BookingResponseDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public string BookingReference { get; set; } = null!;
         public Guid UserId { get; set; }
-        public int VenueId { get; set; }
-        public int ShowId { get; set; }
-        public DateTime BookingDate { get; set; }
+        public Guid EventId { get; set; }
+        public string Status { get; set; } = null!;
+
+        public decimal SubTotal { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal ConvenienceFee { get; set; }
         public decimal TotalAmount { get; set; }
-        public string Status { get; set; }
-        public string PaymentStatus { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public string Currency { get; set; } = "INR";
 
-        // Transfer Details
-        public Guid? OriginalUserId { get; set; }
-        public string? OriginalUserName { get; set; }
-        public DateTime? TransferredAt { get; set; }
-        public string? TransferNote { get; set; }
-
-        // Expiry and Cancellation
-        public DateTime? ExpiryTime { get; set; }
+        public DateTime? HoldExpiresAt { get; set; }
         public DateTime? CancelledAt { get; set; }
         public string? CancellationReason { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        // Nested Objects
-        public List<BookingSeatDto> Seats { get; set; } = new List<BookingSeatDto>();
-        public VenueDetailDto Venue { get; set; }
-        public ShowDetailDto Show { get; set; }
+        public List<BookingSeatDto> Seats { get; set; } = new();
     }
 }

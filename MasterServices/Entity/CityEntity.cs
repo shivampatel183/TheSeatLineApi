@@ -6,4 +6,6 @@
     public string Country { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    public ICollection<Venue> Venues { get; set; } = new List<Venue>();
 }
