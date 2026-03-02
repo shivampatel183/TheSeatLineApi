@@ -31,17 +31,17 @@ namespace TheSeatLineApi.MasterServices.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<Response<Event>> GetById(Guid id)
+        public async Task<Response<EventDetailDTO>> GetById(Guid id)
         {
             try
             {
                 var ev = await _eventService.GetByIdAsync(id)
                     ?? throw new Exception("Event not found");
-                return Response<Event>.Ok(ev);
+                return Response<EventDetailDTO>.Ok(ev);
             }
             catch (Exception ex)
             {
-                return Response<Event>.Fail(ex.Message);
+                return Response<EventDetailDTO>.Fail(ex.Message);
             }
         }
 

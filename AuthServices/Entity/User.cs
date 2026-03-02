@@ -1,7 +1,7 @@
 ﻿public class User : BaseEntity
 {
     public Guid TenantId { get; set; }
-    public int UserType { get; set; }
+    public int? UserType { get; set; }
 
     public string Email { get; set; } = null!;
     public string? PasswordHash { get; set; }

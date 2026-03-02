@@ -53,4 +53,13 @@ namespace TheSeatLineApi.MasterServices.DTOs
         public string City { get; set; } = null!;
         public string State { get; set; } = null!;
     }
+
+    public class EventDetailDTO : EventSelectDTO
+    {
+        public string? Tags { get; set; }
+        public string? Performers { get; set; }
+        public byte? AgeRestriction { get; set; }
+        public string Timezone { get; set; } = null!;
+        public int MaxCapacity { get; set; }
+    }
 }

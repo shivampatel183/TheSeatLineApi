@@ -23,5 +23,8 @@ public class Seat : BaseEntity
     [Timestamp]
     public byte[] RowVersion { get; set; } = null!;
 
+    public Guid EventShowId { get; set; }
+
     public Event Event { get; set; } = null!;
+    public EventShow EventShow { get; set; } = null!;
 }

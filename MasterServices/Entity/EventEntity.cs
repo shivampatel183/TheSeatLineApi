@@ -32,6 +32,7 @@
     public bool IsDeleted { get; set; }
 
     public Venue Venue { get; set; } = null!;
+    public ICollection<EventShow> Shows { get; set; } = new List<EventShow>();
     public ICollection<Seat> Seats { get; set; } = new List<Seat>();
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }

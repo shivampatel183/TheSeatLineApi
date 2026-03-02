@@ -29,9 +29,12 @@
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
 
+    public Guid? EventShowId { get; set; }
+
     public User User { get; set; } = null!;
     public Event Event { get; set; } = null!;
+    public EventShow? EventShow { get; set; }
 
-    public ICollection<BookingSeat> BookingSeats { get; set; } = new List<BookingSeat>();
+    public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     public Payment? Payment { get; set; }
 }

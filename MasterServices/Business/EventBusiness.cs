@@ -91,14 +91,35 @@ namespace TheSeatLineApi.MasterServices.Business
             return events;
         }
 
-        public async Task<Event?> GetByIdAsync(Guid id)
+        public async Task<EventDetailDTO?> GetByIdAsync(Guid id)
         {
             return await _context.Events
                 .AsNoTracking()
+                .Where(e => e.Id == id && !e.IsDeleted)
                 .Include(e => e.Venue)
                     .ThenInclude(v => v.City)
-                .Include(e => e.Seats)
-                .FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
+                .Select(e => new EventDetailDTO
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    Description = e.Description,
+                    EventType = e.EventType,
+                    Language = e.Language,
+                    StartDateTime = e.StartDateTime,
+                    EndDateTime = e.EndDateTime,
+                    BannerImageUrl = e.BannerImageUrl,
+                    Status = e.Status,
+                    VenueId = e.VenueId,
+                    VenueName = e.Venue.Name,
+                    City = e.Venue.City.Name,
+                    State = e.Venue.City.State,
+                    Tags = e.Tags,
+                    Performers = e.Performers,
+                    AgeRestriction = e.AgeRestriction,
+                    Timezone = e.Timezone,
+                    MaxCapacity = e.MaxCapacity
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Guid> CreateAsync(EventInsertDTO dto)
