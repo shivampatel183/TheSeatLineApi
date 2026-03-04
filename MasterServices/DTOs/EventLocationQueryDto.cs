@@ -7,7 +7,12 @@ namespace TheSeatLineApi.MasterServices.DTOs
         /// <summary>
         /// Filter by specific city ID
         /// </summary>
-        public int? CityId { get; set; }
+        public string CityName { get; set; }
+
+        /// <summary>
+        /// Filter by specific city ID
+        /// </summary>
+        public Guid CityId { get; set; }
 
         /// <summary>
         /// User's current latitude (for GPS-based search)

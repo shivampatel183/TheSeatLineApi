@@ -58,11 +58,15 @@ namespace TheSeatLineApi.BookingServices.Business
             {
                 seat.Status = (byte)SeatStatus.Reserved;
 
-                _context.BookingSeats.Add(new BookingSeat
+                _context.Tickets.Add(new Ticket
                 {
                     BookingId = booking.Id,
+                    EventShowId = booking.EventShowId ?? Guid.Empty, // Assuming EventShowId is populated correctly now
                     SeatId = seat.Id,
-                    PriceAtBooking = seat.BasePrice
+                    OwnerUserId = booking.UserId,
+                    TicketNumber = Guid.NewGuid().ToString("N")[..10].ToUpper(), // Placeholder logic
+                    QRCode = Guid.NewGuid().ToString("N"), // Placeholder logic
+                    Status = (byte)TicketStatus.Reserved
                 });
             }
 
@@ -79,12 +83,12 @@ namespace TheSeatLineApi.BookingServices.Business
                 .Include(b => b.Event)
                     .ThenInclude(e => e.Venue)
                         .ThenInclude(v => v.City)
-                .Include(b => b.BookingSeats)
-                    .ThenInclude(bs => bs.Seat)
+                .Include(b => b.Tickets)
+                    .ThenInclude(t => t.Seat)
                 .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
 
-            return bookings.Select(b => MapToResponse(b, b.BookingSeats.Select(bs => bs.Seat).ToList())).ToList();
+            return bookings.Select(b => MapToResponse(b, b.Tickets.Where(t => t.Seat != null).Select(t => t.Seat!).ToList())).ToList();
         }
 
         public async Task<BookingResponseDto?> GetByIdAsync(Guid bookingId, Guid userId)
@@ -95,19 +99,19 @@ namespace TheSeatLineApi.BookingServices.Business
                 .Include(b => b.Event)
                     .ThenInclude(e => e.Venue)
                         .ThenInclude(v => v.City)
-                .Include(b => b.BookingSeats)
-                    .ThenInclude(bs => bs.Seat)
+                .Include(b => b.Tickets)
+                    .ThenInclude(t => t.Seat)
                 .FirstOrDefaultAsync();
 
             if (booking == null) return null;
-            return MapToResponse(booking, booking.BookingSeats.Select(bs => bs.Seat).ToList());
+            return MapToResponse(booking, booking.Tickets.Where(t => t.Seat != null).Select(t => t.Seat!).ToList());
         }
 
         public async Task CancelAsync(Guid bookingId, Guid userId, string? reason)
         {
             var booking = await _context.Bookings
-                .Include(b => b.BookingSeats)
-                    .ThenInclude(bs => bs.Seat)
+                .Include(b => b.Tickets)
+                    .ThenInclude(t => t.Seat)
                 .FirstOrDefaultAsync(b => b.Id == bookingId && b.UserId == userId && !b.IsDeleted)
                 ?? throw new Exception("Booking not found");
 
@@ -123,9 +127,12 @@ namespace TheSeatLineApi.BookingServices.Business
             booking.UpdatedAt = DateTime.UtcNow;
 
             // Release seats
-            foreach (var bs in booking.BookingSeats)
+            foreach (var ticket in booking.Tickets)
             {
-                bs.Seat.Status = (byte)SeatStatus.Available;
+                if(ticket.Seat != null) {
+                    ticket.Seat.Status = (byte)SeatStatus.Available;
+                }
+                ticket.Status = (byte)TicketStatus.Cancelled;
             }
 
             await _context.SaveChangesAsync();
@@ -134,6 +141,7 @@ namespace TheSeatLineApi.BookingServices.Business
         public async Task TransferAsync(Guid bookingId, Guid userId, TransferBookingRequestDto dto)
         {
             var booking = await _context.Bookings
+                .Include(b => b.Tickets)
                 .FirstOrDefaultAsync(b => b.Id == bookingId && b.UserId == userId && !b.IsDeleted)
                 ?? throw new Exception("Booking not found");
 
@@ -148,14 +156,19 @@ namespace TheSeatLineApi.BookingServices.Business
             booking.Status = (byte)BookingStatus.Transfered;
             booking.UpdatedAt = DateTime.UtcNow;
 
+            foreach(var ticket in booking.Tickets)
+            {
+                ticket.OwnerUserId = recipient.Id;
+            }
+
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateStatusAsync(Guid bookingId, UpdateBookingStatusDto dto)
         {
             var booking = await _context.Bookings
-                .Include(b => b.BookingSeats)
-                    .ThenInclude(bs => bs.Seat)
+                .Include(b => b.Tickets)
+                    .ThenInclude(t => t.Seat)
                 .FirstOrDefaultAsync(b => b.Id == bookingId && !b.IsDeleted)
                 ?? throw new Exception("Booking not found");
 
@@ -164,15 +177,21 @@ namespace TheSeatLineApi.BookingServices.Business
 
             if (dto.BookingStatus == BookingStatus.Confirmed)
             {
-                foreach (var bs in booking.BookingSeats)
-                    bs.Seat.Status = (byte)SeatStatus.Booked;
+                foreach (var ticket in booking.Tickets)
+                {
+                    if(ticket.Seat != null) ticket.Seat.Status = (byte)SeatStatus.Booked;
+                    ticket.Status = (byte)TicketStatus.Valid;
+                }
             }
             else if (dto.BookingStatus == BookingStatus.Cancelled)
             {
                 booking.CancelledAt = DateTime.UtcNow;
                 booking.CancellationReason = dto.CancellationReason;
-                foreach (var bs in booking.BookingSeats)
-                    bs.Seat.Status = (byte)SeatStatus.Available;
+                foreach (var ticket in booking.Tickets)
+                {
+                    if(ticket.Seat != null) ticket.Seat.Status = (byte)SeatStatus.Available;
+                    ticket.Status = (byte)TicketStatus.Cancelled;
+                }
             }
 
             await _context.SaveChangesAsync();

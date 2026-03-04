@@ -51,8 +51,8 @@ namespace TheSeatLineApi.BookingServices.Business
         {
             var payment = await _context.Payments
                 .Include(p => p.Booking)
-                    .ThenInclude(b => b.BookingSeats)
-                        .ThenInclude(bs => bs.Seat)
+                    .ThenInclude(b => b.Tickets)
+                        .ThenInclude(t => t.Seat)
                 .FirstOrDefaultAsync(p => p.BookingId == dto.BookingId
                     && p.RazorpayOrderId == dto.RazorpayOrderId)
                 ?? throw new Exception("Payment not found");
@@ -68,9 +68,10 @@ namespace TheSeatLineApi.BookingServices.Business
             payment.Booking.Status = (byte)BookingStatus.Confirmed;
             payment.Booking.UpdatedAt = DateTime.UtcNow;
 
-            foreach (var bs in payment.Booking.BookingSeats)
+            foreach (var ticket in payment.Booking.Tickets)
             {
-                bs.Seat.Status = (byte)SeatStatus.Booked;
+                if(ticket.Seat != null) ticket.Seat.Status = (byte)SeatStatus.Booked;
+                ticket.Status = (byte)TicketStatus.Valid;
             }
 
             await _context.SaveChangesAsync();
@@ -81,8 +82,8 @@ namespace TheSeatLineApi.BookingServices.Business
         {
             var payment = await _context.Payments
                 .Include(p => p.Booking)
-                    .ThenInclude(b => b.BookingSeats)
-                        .ThenInclude(bs => bs.Seat)
+                    .ThenInclude(b => b.Tickets)
+                        .ThenInclude(t => t.Seat)
                 .FirstOrDefaultAsync(p => p.Id == paymentId)
                 ?? throw new Exception("Payment not found");
 
@@ -101,9 +102,10 @@ namespace TheSeatLineApi.BookingServices.Business
             payment.Booking.Status = (byte)BookingStatus.Refunded;
             payment.Booking.UpdatedAt = DateTime.UtcNow;
 
-            foreach (var bs in payment.Booking.BookingSeats)
+            foreach (var ticket in payment.Booking.Tickets)
             {
-                bs.Seat.Status = (byte)SeatStatus.Available;
+                if(ticket.Seat != null) ticket.Seat.Status = (byte)SeatStatus.Available;
+                ticket.Status = (byte)TicketStatus.Cancelled;
             }
 
             await _context.SaveChangesAsync();

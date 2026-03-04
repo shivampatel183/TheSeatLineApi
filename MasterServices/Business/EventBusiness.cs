@@ -24,16 +24,27 @@ namespace TheSeatLineApi.MasterServices.Business
                     .ThenInclude(v => v.City)
                 .AsQueryable();
 
-            // Filter by city
-            if (query?.CityId != null)
+            // Filter by city name
+            if (query?.CityName != null)
             {
                 var cityId = (Guid)_context.Cities
-                    .Where(c => c.Id == Guid.Parse(query.CityId.ToString()!))
+                    .Where(c => c.Name == query.CityName)
                     .Select(c => c.Id)
                     .FirstOrDefault();
 
                 q = q.Where(e => e.Venue.CityId == cityId);
             }
+
+            //// Filter by city
+            //if (query?.CityId != null)
+            //{
+            //    var cityId = (Guid)_context.Cities
+            //        .Where(c => c.Id == Guid.Parse(query.CityId.ToString()!))
+            //        .Select(c => c.Id)
+            //        .FirstOrDefault();
+
+            //    q = q.Where(e => e.Venue.CityId == cityId);
+            //}
 
             // Filter by date range
             if (query?.FromDate != null)

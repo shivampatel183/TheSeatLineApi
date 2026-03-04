@@ -17,4 +17,13 @@
         Email = 2,
         SMS = 3
     }
+
+    public enum TicketStatus
+    {
+        Reserved = 1,
+        Valid = 2,
+        Cancelled = 3,
+        Used = 4,
+        Expired = 5
+    }
 }
