@@ -25,14 +25,10 @@ namespace TheSeatLineApi.MasterServices.Business
                 .AsQueryable();
 
             // Filter by city name
-            if (query?.CityName != null)
+            if (!string.IsNullOrWhiteSpace(query?.CityName))
             {
-                var cityId = (Guid)_context.Cities
-                    .Where(c => c.Name == query.CityName)
-                    .Select(c => c.Id)
-                    .FirstOrDefault();
-
-                q = q.Where(e => e.Venue.CityId == cityId);
+                var cityName = query.CityName.Trim();
+                q = q.Where(e => e.Venue.City.Name == cityName);
             }
 
             //// Filter by city

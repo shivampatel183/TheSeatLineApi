@@ -14,4 +14,5 @@ public class EventShow : BaseEntity
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     public ICollection<Seat> Seats { get; set; } = new List<Seat>();
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public ICollection<SeatReservation> SeatReservations { get; set; } = new List<SeatReservation>();
 }

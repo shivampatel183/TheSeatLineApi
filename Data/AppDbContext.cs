@@ -16,17 +16,24 @@ namespace TheSeatLineApi.Data
         public DbSet<VenueOperatingHours> VenueOperatingHours => Set<VenueOperatingHours>();
         public DbSet<Event> Events => Set<Event>();
         public DbSet<EventShow> EventShows => Set<EventShow>();
+        public DbSet<EventCategory> EventCategories => Set<EventCategory>();
+        public DbSet<EventImage> EventImages => Set<EventImage>();
+        public DbSet<EventTag> EventTags => Set<EventTag>();
         public DbSet<Seat> Seats => Set<Seat>();
+        public DbSet<SeatReservation> SeatReservations => Set<SeatReservation>();
         public DbSet<TicketCategory> TicketCategories => Set<TicketCategory>();
 
         // Booking
         public DbSet<Booking> Bookings => Set<Booking>();
+        public DbSet<BookingItem> BookingItems => Set<BookingItem>();
         public DbSet<Ticket> Tickets => Set<Ticket>();
+        public DbSet<TicketScan> TicketScans => Set<TicketScan>();
         public DbSet<TicketTransfer> TicketTransfers => Set<TicketTransfer>();
         public DbSet<Coupon> Coupons => Set<Coupon>();
 
         // Payment
         public DbSet<Payment> Payments => Set<Payment>();
+        public DbSet<PaymentEvent> PaymentEvents => Set<PaymentEvent>();
 
         // Review & Audit
         public DbSet<Review> Reviews => Set<Review>();
@@ -109,6 +116,7 @@ namespace TheSeatLineApi.Data
                 e.Property(ev => ev.Title).IsRequired().HasMaxLength(300);
                 e.Property(ev => ev.Slug).IsRequired().HasMaxLength(350);
                 e.HasIndex(ev => ev.Slug).IsUnique();
+                e.HasIndex(ev => new { ev.VenueId, ev.StartDateTime });
                 e.Property(ev => ev.Timezone).IsRequired().HasMaxLength(60);
                 e.Property(ev => ev.Language).HasMaxLength(10);
                 e.Property(ev => ev.BannerImageUrl).HasMaxLength(1024);
@@ -134,6 +142,34 @@ namespace TheSeatLineApi.Data
                     .WithOne(b => b.Event)
                     .HasForeignKey(b => b.EventId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ── EventCategory ──
+            modelBuilder.Entity<EventCategory>(e =>
+            {
+                e.Property(ec => ec.Name).IsRequired().HasMaxLength(100);
+                e.Property(ec => ec.Slug).IsRequired().HasMaxLength(120);
+                e.HasIndex(ec => ec.Slug).IsUnique();
+            });
+
+            // ── EventImage ──
+            modelBuilder.Entity<EventImage>(e =>
+            {
+                e.Property(ei => ei.ImageUrl).IsRequired().HasMaxLength(1024);
+                e.HasOne(ei => ei.Event)
+                    .WithMany(ev => ev.Images)
+                    .HasForeignKey(ei => ei.EventId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ── EventTag ──
+            modelBuilder.Entity<EventTag>(e =>
+            {
+                e.Property(et => et.Tag).IsRequired().HasMaxLength(50);
+                e.HasOne(et => et.Event)
+                    .WithMany(ev => ev.EventTags)
+                    .HasForeignKey(et => et.EventId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // ── EventShow ──
@@ -179,10 +215,32 @@ namespace TheSeatLineApi.Data
                 e.Property(s => s.RowVersion).IsRowVersion();
             });
 
+            // ── SeatReservation ──
+            modelBuilder.Entity<SeatReservation>(e =>
+            {
+                e.HasIndex(sr => new { sr.SeatId, sr.EventShowId });
+
+                e.HasOne(sr => sr.Seat)
+                    .WithMany(s => s.SeatReservations)
+                    .HasForeignKey(sr => sr.SeatId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(sr => sr.EventShow)
+                    .WithMany(es => es.SeatReservations)
+                    .HasForeignKey(sr => sr.EventShowId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(sr => sr.User)
+                    .WithMany(u => u.SeatReservations)
+                    .HasForeignKey(sr => sr.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             // ── Booking ──
             modelBuilder.Entity<Booking>(e =>
             {
                 e.Property(b => b.BookingReference).IsRequired().HasMaxLength(20);
+                e.HasIndex(b => new { b.UserId, b.CreatedAt });
                 e.HasIndex(b => b.BookingReference).IsUnique();
                 e.Property(b => b.SubTotal).HasColumnType("decimal(10,2)");
                 e.Property(b => b.DiscountAmount).HasColumnType("decimal(10,2)");
@@ -206,6 +264,27 @@ namespace TheSeatLineApi.Data
                     .WithOne(p => p.Booking)
                     .HasForeignKey<Payment>(p => p.BookingId)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ── BookingItem ──
+            modelBuilder.Entity<BookingItem>(e =>
+            {
+                e.Property(bi => bi.Price).HasColumnType("decimal(10,2)");
+
+                e.HasOne(bi => bi.Booking)
+                    .WithMany(b => b.Items)
+                    .HasForeignKey(bi => bi.BookingId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(bi => bi.Seat)
+                    .WithMany()
+                    .HasForeignKey(bi => bi.SeatId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(bi => bi.TicketCategory)
+                    .WithMany()
+                    .HasForeignKey(bi => bi.TicketCategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             // ── Ticket ──
@@ -236,6 +315,15 @@ namespace TheSeatLineApi.Data
                     .WithMany()
                     .HasForeignKey(t => t.TicketCategoryId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ── TicketScan ──
+            modelBuilder.Entity<TicketScan>(e =>
+            {
+                e.HasOne(ts => ts.Ticket)
+                    .WithMany(t => t.TicketScans)
+                    .HasForeignKey(ts => ts.TicketId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // ── TicketTransfer ──
@@ -272,6 +360,18 @@ namespace TheSeatLineApi.Data
                 e.Property(p => p.InvoiceNumber).HasMaxLength(50);
                 e.Property(p => p.FailureReason).HasMaxLength(500);
                 e.HasIndex(p => p.BookingId).IsUnique();
+            });
+
+            // ── PaymentEvent ──
+            modelBuilder.Entity<PaymentEvent>(e =>
+            {
+                e.Property(pe => pe.EventType).IsRequired().HasMaxLength(50);
+                e.Property(pe => pe.GatewayPayload).HasColumnType("nvarchar(max)");
+
+                e.HasOne(pe => pe.Payment)
+                    .WithMany(p => p.Events)
+                    .HasForeignKey(pe => pe.PaymentId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // ── Review ──
