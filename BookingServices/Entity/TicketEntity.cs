@@ -20,4 +20,5 @@ public class Ticket : BaseEntity
     public User OwnerUser { get; set; } = null!;
     public User? TransferredToUser { get; set; }
     public ICollection<TicketTransfer> TicketTransfers { get; set; } = new List<TicketTransfer>();
+    public ICollection<TicketScan> TicketScans { get; set; } = new List<TicketScan>();
 }

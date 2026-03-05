@@ -24,4 +24,5 @@
     public DateTime? WebhookReceivedAt { get; set; }
 
     public Booking Booking { get; set; } = null!;
+    public ICollection<PaymentEvent> Events { get; set; } = new List<PaymentEvent>();
 }

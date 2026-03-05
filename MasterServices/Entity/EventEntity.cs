@@ -35,4 +35,6 @@
     public ICollection<EventShow> Shows { get; set; } = new List<EventShow>();
     public ICollection<Seat> Seats { get; set; } = new List<Seat>();
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public ICollection<EventImage> Images { get; set; } = new List<EventImage>();
+    public ICollection<EventTag> EventTags { get; set; } = new List<EventTag>();
 }

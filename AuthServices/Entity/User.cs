@@ -35,4 +35,5 @@
     public Guid? UpdatedBy { get; set; }
 
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public ICollection<SeatReservation> SeatReservations { get; set; } = new List<SeatReservation>();
 }

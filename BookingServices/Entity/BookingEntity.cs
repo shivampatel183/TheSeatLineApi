@@ -36,5 +36,6 @@
     public EventShow? EventShow { get; set; }
 
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public ICollection<BookingItem> Items { get; set; } = new List<BookingItem>();
     public Payment? Payment { get; set; }
 }

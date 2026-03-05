@@ -65,6 +65,7 @@ namespace TheSeatLineApi
             builder.Services.AddScoped<ICityRepository, CityBusiness>();
             builder.Services.AddScoped<IVenueRepository, VenueBusiness>();
             builder.Services.AddScoped<IEventRepository, EventBusiness>();
+            builder.Services.AddScoped<IEventShowRepository, EventShowBusiness>();
             builder.Services.AddScoped<ISeatRepository, SeatBusiness>();
 
             // Booking Services
