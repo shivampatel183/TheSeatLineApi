@@ -1,15 +1,15 @@
 ﻿using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using TheSeatLineApi.AuthServices.Business;
-using TheSeatLineApi.AuthServices.Helpers;
-using TheSeatLineApi.AuthServices.Repository;
-using TheSeatLineApi.Data;
-using TheSeatLineApi.MasterServices.Business;
-using TheSeatLineApi.MasterServices.Repository;
-using TheSeatLineApi.BookingServices.Business;
-using TheSeatLineApi.BookingServices.Repository;
-using TheSeatLineApi.Common.Middleware;
+using TheSeatLineApi.Modules.AuthModule.Services;
+using TheSeatLineApi.Modules.AuthModule.Helpers;
+using TheSeatLineApi.Modules.AuthModule.Repositories;
+using TheSeatLineApi.Infrastructure.Persistence;
+using TheSeatLineApi.Modules.MasterModule.Services;
+using TheSeatLineApi.Modules.MasterModule.Repositories;
+using TheSeatLineApi.Modules.BookingModule.Services;
+using TheSeatLineApi.Modules.BookingModule.Repositories;
+using TheSeatLineApi.Shared.Middleware;
 
 namespace TheSeatLineApi
 {
@@ -127,6 +127,11 @@ namespace TheSeatLineApi
         }
     }
 }
+
+
+
+
+
 
 
 
