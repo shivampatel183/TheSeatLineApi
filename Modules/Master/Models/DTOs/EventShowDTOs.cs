@@ -18,6 +18,19 @@ namespace TheSeatLineApi.Modules.MasterModule.Models.DTOs
         public int MaxCapacity { get; set; }
     }
 
+    public class EventShowUpdateDTO
+    {
+        [Required]
+        public DateTime StartDateTime { get; set; }
+
+        [Required]
+        public DateTime EndDateTime { get; set; }
+
+        public byte Status { get; set; }
+
+        public int MaxCapacity { get; set; }
+    }
+
     public class EventShowSelectDTO
     {
         public Guid Id { get; set; }

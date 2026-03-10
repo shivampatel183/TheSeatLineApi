@@ -65,6 +65,58 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
             await _context.SaveChangesAsync();
             return show.Id;
         }
+
+        public async Task<List<EventShowSelectDTO>> GetByEventIdAsync(Guid eventId)
+        {
+            var eventExists = await _context.Events
+                .AsNoTracking()
+                .AnyAsync(e => e.Id == eventId && !e.IsDeleted);
+
+            if (!eventExists)
+                throw new Exception("Event not found");
+
+            return await _context.EventShows
+                .AsNoTracking()
+                .Include(es => es.Event)
+                .Where(es => es.EventId == eventId)
+                .OrderBy(es => es.StartDateTime)
+                .Select(es => new EventShowSelectDTO
+                {
+                    Id = es.Id,
+                    EventId = es.EventId,
+                    EventTitle = es.Event.Title,
+                    StartDateTime = es.StartDateTime,
+                    EndDateTime = es.EndDateTime,
+                    Status = es.Status,
+                    MaxCapacity = es.MaxCapacity
+                })
+                .ToListAsync();
+        }
+
+        public async Task UpdateAsync(Guid id, EventShowUpdateDTO dto)
+        {
+            var show = await _context.EventShows
+                .FirstOrDefaultAsync(es => es.Id == id)
+                ?? throw new Exception("Event show not found");
+
+            show.StartDateTime = dto.StartDateTime;
+            show.EndDateTime = dto.EndDateTime;
+            show.Status = dto.Status;
+            show.MaxCapacity = dto.MaxCapacity;
+            show.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var show = await _context.EventShows
+                .FirstOrDefaultAsync(es => es.Id == id)
+                ?? throw new Exception("Event show not found");
+
+            _context.EventShows.Remove(show);
+            await _context.SaveChangesAsync();
+        }
     }
 }
 

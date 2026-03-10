@@ -55,6 +55,7 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
                 {
                     Id = e.Id,
                     Title = e.Title,
+                    Slug = e.Slug,
                     Description = e.Description,
                     EventType = e.EventType,
                     Language = e.Language,

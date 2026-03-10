@@ -43,6 +43,50 @@ namespace TheSeatLineApi.Modules.MasterModule.Controllers
                 return Response<Guid>.Fail(ex.Message);
             }
         }
+
+        [HttpGet("event/{eventId}")]
+        public async Task<Response<List<EventShowSelectDTO>>> GetByEventId(Guid eventId)
+        {
+            try
+            {
+                var shows = await _eventShowService.GetByEventIdAsync(eventId);
+                return Response<List<EventShowSelectDTO>>.Ok(shows);
+            }
+            catch (Exception ex)
+            {
+                return Response<List<EventShowSelectDTO>>.Fail(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<Response<string>> Update(Guid id, EventShowUpdateDTO dto)
+        {
+            try
+            {
+                await _eventShowService.UpdateAsync(id, dto);
+                return Response<string>.Ok(null, "Event show updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return Response<string>.Fail(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<Response<string>> Delete(Guid id)
+        {
+            try
+            {
+                await _eventShowService.DeleteAsync(id);
+                return Response<string>.Ok(null, "Event show deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return Response<string>.Fail(ex.Message);
+            }
+        }
     }
 }
 

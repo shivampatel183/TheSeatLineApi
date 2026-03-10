@@ -41,8 +41,10 @@ namespace TheSeatLineApi.Modules.MasterModule.Models.DTOs
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = null!;
+        public string Slug { get; set; }
         public string? Description { get; set; }
         public byte EventType { get; set; }
+
         public string? Language { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime? EndDateTime { get; set; }
