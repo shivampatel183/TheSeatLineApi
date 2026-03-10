@@ -74,7 +74,7 @@ namespace TheSeatLineApi.Modules.MasterModule.Models.DTOs
 
         // Additional collections
         public List<EventImageDto> Images { get; set; } = new();
-        public List<EventShowDto> Shows { get; set; } = new();
+        //public List<EventShowDto> Shows { get; set; } = new();
     }
 
     public class EventImageDto

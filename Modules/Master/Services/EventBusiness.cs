@@ -150,14 +150,6 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
                         ImageUrl = i.ImageUrl,
                         SortOrder = i.SortOrder
                     }).ToList(),
-                    Shows = e.Shows.Select(s => new EventShowDto
-                    {
-                        Id = s.Id,
-                        StartDateTime = s.StartDateTime,
-                        EndDateTime = s.EndDateTime,
-                        Status = s.Status,
-                        // AvailableSeats = s.MaxCapacity - s.Tickets.Count(t => t.Status != 3) // optional
-                    }).ToList()
                 })
                 .FirstOrDefaultAsync();
         }
