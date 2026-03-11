@@ -55,6 +55,7 @@ namespace TheSeatLineApi
                     };
                 });
 
+
             // Auth Services
             builder.Services.AddScoped<IUserRepository, UserBusiness>();
             builder.Services.AddScoped<IAuthService, AuthBusiness>();
