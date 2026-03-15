@@ -2,11 +2,8 @@
 {
     public enum SeatType
     {
-        Regular = 1,
-        Premium = 2,
-        Recliner = 3,
-        VIP = 4,
-        Couple = 5
+        CetegoryWise = 1,
+        SeatWise = 2,
     }
 
     public enum SeatStatus

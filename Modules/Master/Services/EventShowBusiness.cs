@@ -38,7 +38,8 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
                     StartDateTime = es.StartDateTime,
                     EndDateTime = es.EndDateTime,
                     Status = es.Status,
-                    MaxCapacity = es.MaxCapacity
+                    MaxCapacity = es.MaxCapacity,
+                    CategoryWise = es.CategoryWise
                 })
                 .ToListAsync();
         }
@@ -58,7 +59,8 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
                 StartDateTime = dto.StartDateTime,
                 EndDateTime = dto.EndDateTime,
                 Status = dto.Status,
-                MaxCapacity = dto.MaxCapacity
+                MaxCapacity = dto.MaxCapacity,
+                CategoryWise = dto.CategoryWise
             };
 
             _context.EventShows.Add(show);
@@ -88,7 +90,8 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
                     StartDateTime = es.StartDateTime,
                     EndDateTime = es.EndDateTime,
                     Status = es.Status,
-                    MaxCapacity = es.MaxCapacity
+                    MaxCapacity = es.MaxCapacity,
+                    CategoryWise = es.CategoryWise
                 })
                 .ToListAsync();
         }
@@ -104,6 +107,7 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
             show.Status = dto.Status;
             show.MaxCapacity = dto.MaxCapacity;
             show.UpdatedAt = DateTime.UtcNow;
+            show.CategoryWise = dto.CategoryWise;
 
             await _context.SaveChangesAsync();
         }

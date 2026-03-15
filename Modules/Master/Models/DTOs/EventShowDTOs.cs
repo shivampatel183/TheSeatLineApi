@@ -16,6 +16,7 @@ namespace TheSeatLineApi.Modules.MasterModule.Models.DTOs
         public byte Status { get; set; }
 
         public int MaxCapacity { get; set; }
+        public bool CategoryWise { get; set; }
     }
 
     public class EventShowUpdateDTO
@@ -29,6 +30,8 @@ namespace TheSeatLineApi.Modules.MasterModule.Models.DTOs
         public byte Status { get; set; }
 
         public int MaxCapacity { get; set; }
+        public bool CategoryWise { get; set; }
+
     }
 
     public class EventShowSelectDTO
@@ -40,6 +43,8 @@ namespace TheSeatLineApi.Modules.MasterModule.Models.DTOs
         public DateTime EndDateTime { get; set; }
         public byte Status { get; set; }
         public int MaxCapacity { get; set; }
+        public bool CategoryWise { get; set; }
+
     }
 }
 

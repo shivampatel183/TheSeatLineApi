@@ -10,7 +10,7 @@ public class EventShow : BaseEntity
     public DateTime EndDateTime { get; set; }
     public byte Status { get; set; }
     public int MaxCapacity { get; set; }
-
+    public bool CategoryWise { get; set; }
     public Event Event { get; set; } = null!;
     public ICollection<TicketCategory> TicketCategories { get; set; } = new List<TicketCategory>();
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();

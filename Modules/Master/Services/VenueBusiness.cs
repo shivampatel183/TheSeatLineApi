@@ -72,13 +72,6 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
                 ContactPhone = venue.ContactPhone,
                 WebsiteUrl = venue.WebsiteUrl,
                 IsActive = venue.IsActive,
-                OperatingHours = venue.OperatingHours.Select(oh => new OperatingHourDto
-                {
-                    DayOfWeek = oh.DayOfWeek,
-                    OpenTime = oh.OpenTime,
-                    CloseTime = oh.CloseTime,
-                    IsClosed = oh.IsClosed
-                }).ToList()
             };
         }
 

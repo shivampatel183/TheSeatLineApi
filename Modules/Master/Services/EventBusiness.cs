@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TheSeatLineApi.Shared.Helpers;
 using TheSeatLineApi.Infrastructure.Persistence;
 using TheSeatLineApi.Modules.MasterModule.Models.DTOs;
@@ -10,7 +10,7 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
     {
         private readonly AppDbContext _context;
 
-        public EventBusiness(AppDbContext context)
+        public EventBusiness(AppDbContext context, IVenueRepository venueRepository)
         {
             _context = context;
         }
@@ -18,6 +18,7 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
         // ==================== Public listing ====================
         public async Task<List<EventSelectDTO>> GetAllAsync(EventLocationQueryDto? query = null)
         {
+
             var q = _context.Events
                 .AsNoTracking()
                 .Where(e => !e.IsDeleted && e.Status == 1)  // only published events for public
@@ -47,6 +48,9 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
             int page = query?.PageNumber ?? 1;
             int size = query?.PageSize ?? 20;
 
+
+
+
             var events = await q
                 .OrderBy(e => e.StartDateTime)
                 .Skip((page - 1) * size)
@@ -69,7 +73,10 @@ namespace TheSeatLineApi.Modules.MasterModule.Services
                     CitySlug = e.Venue.City.Slug,
                     State = e.Venue.City.State,
                     CategoryName = e.Category != null ? e.Category.Name : null,
-                    Tags = e.EventTags.Select(t => t.Tag).ToList()
+                    Tags = e.EventTags.Select(t => t.Tag).ToList(),
+
+                    
+
                 })
                 .ToListAsync();
 

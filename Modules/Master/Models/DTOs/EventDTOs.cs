@@ -63,6 +63,8 @@ namespace TheSeatLineApi.Modules.MasterModule.Models.DTOs
 
         // Tags (optional – may be omitted in list view)
         public List<string>? Tags { get; set; }
+
+
     }
 
     public class EventDetailDTO : EventSelectDTO
